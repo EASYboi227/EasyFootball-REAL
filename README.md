@@ -1,27 +1,14 @@
-# EasyFootball Tournament Hub — Version 2
+# EasyFootball Tournament Hub V3
 
-This is the upgraded shared-tournament build.
+## What changed
+- Start Tournament locks the player list and generates fixtures.
+- Knockout winners advance automatically; final crowns a champion.
+- League finishes automatically and crowns the table leader.
+- Groups and Groups + Knockout use group round-robin fixtures; hybrid qualifies the top 2 from each group into knockout.
+- Results are submitted then confirmed by the admin.
+- Public players cannot delete tournaments.
+- Admin can delete owned tournaments.
+- Dark/light mode works.
 
-## What V2 adds
-- Shared online tournaments through Supabase
-- Admin sign-in
-- Shareable tournament links
-- Player joining
-- Result submission + admin confirmation
-- Live standings
-- Proper knockout bracket logic in the app architecture
-- League / group / hybrid support
-- WhatsApp-friendly links
-- Local demo mode when Supabase is not configured
-
-## One-time setup
-1. Create a free Supabase project.
-2. Open SQL Editor and run `schema.sql`.
-3. In Project Settings > API, copy the Project URL and anon public key.
-4. Put them in `config.js`.
-5. Upload all files to GitHub Pages.
-
-Never put a Supabase service-role key in this website. Only use the public anon key.
-
-## Important
-The website code is ready, but a real shared database cannot be created inside your GitHub account automatically. Supabase project creation and its API values require your own account action.
+## Database
+Run `schema_v3_migration.sql` once in the existing Supabase project. Do not rerun the original schema.
