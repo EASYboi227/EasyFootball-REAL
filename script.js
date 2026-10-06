@@ -46,8 +46,8 @@ function knockoutLabel(matchCount,position){
   if(matchCount===1)return 'Final';
   if(matchCount===2)return 'Semi-Final '+position;
   if(matchCount===4)return 'Quarter-Final '+position;
-  if(matchCount===8)return 'Round of 16 - Match '+position;
-  return 'Knockout Round - Match '+position;
+  const playersInRound=matchCount*2;
+  return 'Round of '+playersInRound+' - Match '+position;
 }
 function deadlineForNow(){return new Date(Date.now()+24*60*60*1000).toISOString()}
 function makeKnockoutRows(ids,round,totalRounds){
@@ -96,6 +96,14 @@ async function startTournament(){
   if(current.status!=='open')return;
   if(current.players.length<2){toast('Add at least 2 players');return}
   if(!confirm('Start tournament? Players will be locked and fixtures generated.'))return;
+  // If a previous start attempt created only part of the bracket and then failed,
+  // remove those unfinished generated matches before retrying. This prevents the
+  // unique (tournament, stage, round, position) constraint from being hit.
+  if(current.matches.length){
+    const {error:cleanupError}=await sb.from('matches').delete().eq('tournament_id',current.id);
+    if(cleanupError){toast('Could not reset unfinished fixtures: '+cleanupError.message);return}
+    current=await getTournament(current.id);
+  }
   let rows=[];const ids=current.players.map(p=>p.id);
   if(current.format==='league')rows=roundRobin(ids,'league');
   else if(current.format==='groups'||current.format==='hybrid'){
